@@ -1,0 +1,24 @@
+{
+  "displayName": "Mek-PlayerData",
+  "name": "com.pika.mekplayerdata",
+  "version": "0.0.1",
+  "unity": "2019.4",
+  "description": "Extended version of Unity's PlayerPrefs to speed up coding",
+  "keywords": [
+    "mek",
+    "mek-package",
+    "mek-playerdata",
+    "PlayerPrefs"
+  ],
+  "category": "Libraries",
+  "author": {
+    "email": "emirhankenter@pika.games",
+    "name": "Memduh Emirhan Kenter",
+    "url": "https://pika.games"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emirhankenter/mek-playerdata.git",
+    "revision": "fca0500fde8097d4f61918829a920f5702948883"
+  }
+}

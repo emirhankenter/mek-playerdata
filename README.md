@@ -1,0 +1,1 @@
+Extended version of Unity's PlayerPrefs to speed up coding
