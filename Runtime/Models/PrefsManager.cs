@@ -8,53 +8,23 @@ namespace Mek.Models
     public class PrefsManager
     {
         #region Config
-
-        public static bool IsPrefsInitialized
-        {
-            get => GetBool(MekPrefKeys.IsPrefsInitialized);
-            private set => SetBool(MekPrefKeys.IsPrefsInitialized, value);
-        }
         
-        public static Dictionary<string, BaseStat> Prefs;
+        public static Dictionary<string, BaseStat> Prefs = new Dictionary<string, BaseStat>();
 
-        public static void Initialize(Dictionary<string, BaseStat> dictionary)
+        public static void InitializeData(Dictionary<string, BaseStat> prefs)
         {
-            Prefs = new Dictionary<string, BaseStat>(dictionary);
-            
-            if (!IsPrefsInitialized)
-            {
-                InitializePlayerPrefs();
-            }
-            else
-            {
-                InitializeUnsetPlayerPrefs();
-            }
+            InitializePlayerPrefs(prefs);
         }
-        
 
-        private static void InitializePlayerPrefs()
+        private static void InitializePlayerPrefs(Dictionary<string, BaseStat> prefs)
         {
-            foreach (var stat in Prefs)
+            foreach (var stat in prefs)
             {
+                if (HasKey(stat.Key)) continue;
+                Prefs[stat.Key] = stat.Value;
                 var type = stat.Value.GetStatType();
 
                 SetByType(stat.Key, type);
-            }
-
-            IsPrefsInitialized = true;
-            Debug.Log("Prefs has Initialized.");
-        }
-
-        private static void InitializeUnsetPlayerPrefs()
-        {
-            foreach (var stat in Prefs)
-            {
-                if (!HasKey(stat.Key))
-                {
-                    var type = stat.Value.GetStatType();
-
-                    SetByType(stat.Key, type);
-                }
             }
         }
 
