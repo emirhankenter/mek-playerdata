@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Mek.Models.Stats;
 using UnityEngine;
 
@@ -115,9 +116,9 @@ namespace Mek.Models
             SetData(prefKey, value);
         }
 
-        public static int GetInt(string prefKey)
+        public static int GetInt(string prefKey, int defaultValue = 0)
         {
-            return PlayerPrefs.GetInt(prefKey);
+            return PlayerPrefs.GetInt(prefKey, defaultValue);
         }
 
         #endregion
@@ -129,9 +130,9 @@ namespace Mek.Models
             SetData(prefKey, value);
         }
 
-        public static float GetFloat(string prefKey)
+        public static float GetFloat(string prefKey, float defaultValue = 0f)
         {
-            return PlayerPrefs.GetFloat(prefKey);
+            return PlayerPrefs.GetFloat(prefKey, defaultValue);
         }
 
         #endregion
@@ -143,9 +144,9 @@ namespace Mek.Models
             SetData(prefKey, value);
         }
 
-        public static long GetLong(string prefKey)
+        public static long GetLong(string prefKey, long defaultValue = 0)
         {
-            return long.Parse(PlayerPrefs.GetString(prefKey));
+            return long.Parse(PlayerPrefs.GetString(prefKey, defaultValue.ToString(CultureInfo.InvariantCulture)));
         }
 
         #endregion
@@ -157,9 +158,9 @@ namespace Mek.Models
             SetData(prefKey, value);
         }
 
-        public static bool GetBool(string prefKey)
+        public static bool GetBool(string prefKey, bool defaultValue = false)
         {
-            return PlayerPrefs.GetInt(prefKey) == 1;
+            return PlayerPrefs.GetInt(prefKey, defaultValue ? 1 : 0) == 1;
         }
 
         #endregion
@@ -171,9 +172,9 @@ namespace Mek.Models
             SetData(prefKey, value);
         }
 
-        public static string GetString(string prefKey)
+        public static string GetString(string prefKey, string defaultValue = "")
         {
-            return PlayerPrefs.GetString(prefKey);
+            return PlayerPrefs.GetString(prefKey, defaultValue);
         }
 
         #endregion
@@ -197,15 +198,15 @@ namespace Mek.Models
         #region Vector3
         public static void SetVector3(string prefKey, Vector3 value)
         {
-            PlayerPrefs.SetFloat($"{prefKey}.X", value.x);
-            PlayerPrefs.SetFloat($"{prefKey}.Y", value.y);
-            PlayerPrefs.SetFloat($"{prefKey}.Z", value.z);
+            var json = JsonUtility.ToJson(value);
+            PlayerPrefs.SetString(prefKey, json);
             SetData(prefKey, value);
         }
 
-        public static Vector3 GetVector3(string prefKey)
+        public static Vector3 GetVector3(string prefKey, Vector3 defaultValue = default)
         {
-            var value = new Vector3(PlayerPrefs.GetFloat($"{prefKey}.X"), PlayerPrefs.GetFloat($"{prefKey}.Y"), PlayerPrefs.GetFloat($"{prefKey}.Z"));
+            var json = PlayerPrefs.GetString(prefKey, JsonUtility.ToJson(defaultValue));
+            var value = JsonUtility.FromJson<Vector3>(json);
             return value;
         }
 
@@ -218,9 +219,9 @@ namespace Mek.Models
             SetData(prefKey, value);
         }
 
-        public static DateTime GetDate(string prefKey)
+        public static DateTime GetDate(string prefKey, DateTime defaultValue = default)
         {
-            long temp = Convert.ToInt64(PlayerPrefs.GetString(prefKey));
+            long temp = Convert.ToInt64(PlayerPrefs.GetString(prefKey, defaultValue.ToBinary().ToString()));
 
             return DateTime.FromBinary(temp);
         }
@@ -236,9 +237,10 @@ namespace Mek.Models
             SetData(prefKey, json);
         }
 
-        public static T GetObject<T>(string prefKey)
+        public static T GetObject<T>(string prefKey, T defaultValue = default)
         {
-            var objFromJson = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefKey));
+            var defaultValueJson = JsonUtility.ToJson(defaultValue);
+            var objFromJson = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefKey, defaultValueJson));
             return objFromJson;
         }
 

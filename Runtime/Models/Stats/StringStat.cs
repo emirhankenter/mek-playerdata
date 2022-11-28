@@ -10,6 +10,8 @@ namespace Mek.Models.Stats
         {
             CurrentValue = initial;
         }
+        
+        public StringStat(){}
 
         public virtual void Reconstruct(string value)
         {

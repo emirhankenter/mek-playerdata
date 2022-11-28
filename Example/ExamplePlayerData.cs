@@ -6,30 +6,17 @@ using Mek.Models;
 
 namespace Mek.Examples
 {
-    public sealed class ExamplePlayerData : BasePlayerData
+    public sealed class ExamplePlayerData : BasePlayerData<ExamplePlayerData>, IPlayerData
     {
-        public static void Construct()
-        {
-            if (_instance != null) return;
-            _instance = new ExamplePlayerData();
-            _instance.Init();
-        }
-        
-        private static ExamplePlayerData _instance;
-        
-        private static readonly Dictionary<string, BaseStat> Prefs = new Dictionary<string, BaseStat> {
+        public override Dictionary<string, BaseStat> Prefs => new Dictionary<string, BaseStat> {
             
             { ExamplePrefKeys.ExampleInteger, new IntStat(-10, 10, 0)},
             { ExamplePrefKeys.ExampleBoolean, new BoolStat(true)},
+            { ExamplePrefKeys.ExampleClass, new ObjectStat<ExampleClass>(new ExampleClass(){Number = 100})},
             //.. All default values must be here
             //..
             //..
         };
-        
-        public override Dictionary<string, BaseStat> GetPrefs()
-        {
-            return Prefs;
-        }
         
         public static int ExampleInteger
         {
@@ -47,10 +34,11 @@ namespace Mek.Examples
     {
         public static readonly string ExampleInteger = nameof(ExampleInteger);
         public static readonly string ExampleBoolean = nameof(ExampleBoolean);
+        public static readonly string ExampleClass = nameof(ExampleClass);
     }
 
     [Serializable]
-    public class TestClass : IObservableModel
+    public class ExampleClass : IObservableModel
     {
         public event Action PropertyChanged;
         public int Number;

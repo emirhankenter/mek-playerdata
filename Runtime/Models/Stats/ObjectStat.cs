@@ -28,6 +28,12 @@ namespace Mek.Models.Stats
             ObjectModel = string.IsNullOrEmpty(initial) ? new TT() : JsonUtility.FromJson<TT>(CurrentValue);
         }
 
+        public ObjectStat(TT initial)
+        {
+            var json = JsonUtility.ToJson(initial);
+            ObjectModel = string.IsNullOrEmpty(json) ? new TT() : initial;
+        }
+
         ~ObjectStat()
         {
             ObjectModel.PropertyChanged -= OnPropertyChanged;
