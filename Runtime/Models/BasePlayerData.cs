@@ -32,7 +32,5 @@ namespace Mek.Models
             PrefsManager.InitializeData(Instance.Prefs);
             _isInitialized = true;
         }
-        
-        public abstract Dictionary<string, BaseStat> Prefs { get; }
     }
 }

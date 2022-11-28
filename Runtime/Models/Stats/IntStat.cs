@@ -9,6 +9,12 @@ namespace Mek.Models.Stats
         public int Max { get; protected set; }
         public int CurrentValue { get; protected set; }
 
+        public IntStat(int initial)
+        {
+            Min = int.MinValue;
+            Max = int.MaxValue;
+            CurrentValue = initial;
+        }
         public IntStat(int min, int max, int initial)
         {
             Min = min;

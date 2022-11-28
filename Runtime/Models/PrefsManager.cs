@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Mek.Interfaces;
 using Mek.Models.Stats;
 using UnityEngine;
 
@@ -21,10 +22,11 @@ namespace Mek.Models
         {
             foreach (var stat in prefs)
             {
-                if (HasKey(stat.Key)) continue;
-                Prefs[stat.Key] = stat.Value;
+                Prefs.Add(stat.Key, stat.Value);
+                // Prefs[stat.Key] = stat.Value;
+                if (HasSavedBefore(stat.Key)) continue;
+                
                 var type = stat.Value.GetStatType();
-
                 SetByType(stat.Key, type);
             }
         }
@@ -81,6 +83,12 @@ namespace Mek.Models
 
                 SetDate(key, value);
             }
+            else if (type == typeof(IObservableModel))
+            {
+                var value = Prefs[key].Get<string>();
+
+                SetString(key, value);
+            }
             else
             {
                 var value = Prefs[key].Get<string>();
@@ -91,12 +99,10 @@ namespace Mek.Models
 
         private static bool SetData<T>(string key, T value)
         {
-            if (Prefs.ContainsKey(key) &&  Prefs[key] != null)
-            {
-                Prefs[key].Set(value);
-                return true;
-            }
-            return false;
+            if(!Prefs.TryGetValue(key, out BaseStat baseStat)) return false;
+
+            baseStat.Set(value);
+            return true;
         }
 
         private static T GetData<T>(string key)
@@ -104,7 +110,7 @@ namespace Mek.Models
             return Prefs[key].Get<T>();
         }
 
-        public static bool HasKey(string key)
+        public static bool HasSavedBefore(string key)
         {
             return PlayerPrefs.HasKey(key);
         }
@@ -230,15 +236,19 @@ namespace Mek.Models
 
         #region Object
 
-        public static void SetObject<T>(string prefKey, T value)
+        public static void SetObject<T>(string prefKey, T value) where T : class, IObservableModel, new ()
         {
             var json = JsonUtility.ToJson(value);
             PlayerPrefs.SetString(prefKey, json);
             SetData(prefKey, json);
         }
 
-        public static T GetObject<T>(string prefKey, T defaultValue = default)
+        public static T GetObject<T>(string prefKey, T defaultValue = default) where T : class, IObservableModel, new ()
         {
+            if (defaultValue == null)
+            {
+                defaultValue = new T();
+            }
             var defaultValueJson = JsonUtility.ToJson(defaultValue);
             var objFromJson = JsonUtility.FromJson<T>(PlayerPrefs.GetString(prefKey, defaultValueJson));
             return objFromJson;

@@ -9,6 +9,13 @@ namespace Mek.Models.Stats
         public float Max { get; protected set; }
         public float CurrentValue { get; protected set; }
 
+        public FloatStat(float initial)
+        {
+            Min = float.MinValue;
+            Max = float.MaxValue;
+            CurrentValue = initial;
+        }
+
         public FloatStat(float min, float max, float initial)
         {
             Min = min;

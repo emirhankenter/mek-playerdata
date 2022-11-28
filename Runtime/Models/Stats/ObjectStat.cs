@@ -32,6 +32,7 @@ namespace Mek.Models.Stats
         {
             var json = JsonUtility.ToJson(initial);
             ObjectModel = string.IsNullOrEmpty(json) ? new TT() : initial;
+            CurrentValue = json;
         }
 
         ~ObjectStat()
